@@ -27,6 +27,15 @@ typedef NS_ENUM(char, RocksDBCompressionType)
 	RocksDBCompressionLZ4HC = 0x5
 };
 
+/** The DB compaction style. */
+typedef NS_ENUM(char, RocksDBCompactionStyle)
+{
+    RocksDBCompactionStyleLevel = 0x0,
+    RocksDBCompactionStyleUniversal = 0x1,
+    RocksDBCompactionStyleFIFO = 0x2,
+    RocksDBCompactionStyleNone = 0x3
+};
+
 @interface RocksDBColumnFamilyOptions : NSObject
 
 /** @brief Comparator used to define the order of keys in the table.
@@ -173,6 +182,20 @@ typedef NS_ENUM(char, RocksDBCompressionType)
  Default: 0 (disabled)
  */
 @property (nonatomic, assign) size_t maxSuccessiveMerges;
+
+/** @brief Compaction style.
+ Default: RocksDBCompactionStyleLevel
+ */
+@property (nonatomic, assign) RocksDBCompactionStyle compactionStyle;
+
+/** @brief TTL for FIFO compaction. Will attempt to delete oldest data during compaction. */
+@property (nonatomic, assign) uint64_t fifoCompactionTTL;
+
+/** @brief Max Table Files Size. */
+@property (nonatomic, assign) uint64_t fifoCompactionMaxTableFilesSize;
+
+/** @brief Allow FIFO compaction. */
+@property (nonatomic, assign) BOOL fifoCompactionSetAllow;
 
 @end
 

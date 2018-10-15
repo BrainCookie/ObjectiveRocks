@@ -343,4 +343,44 @@
 	return _options.max_successive_merges;
 }
 
+- (void)setCompactionStyle:(RocksDBCompactionStyle)compactionStyle
+{
+    _options.compaction_style = (rocksdb::CompactionStyle)compactionStyle;
+}
+
+- (RocksDBCompactionStyle)compactionStyle
+{
+    return (RocksDBCompactionStyle)_options.compaction_style;
+}
+
+- (void)setFifoCompactionTTL:(uint64_t)ttl
+{
+    _options.compaction_options_fifo.ttl = ttl;
+}
+
+- (uint64_t)fifoCompactionTTL
+{
+    return _options.compaction_options_fifo.ttl;
+}
+
+- (void)setFifoCompactionMaxTableFilesSize:(uint64_t)size
+{
+    _options.compaction_options_fifo.max_table_files_size = size;
+}
+
+- (uint64_t)fifoCompactionMaxTableFilesSize
+{
+    return _options.compaction_options_fifo.max_table_files_size;
+}
+
+- (void)setFifoCompactionSetAllow:(BOOL)allowCompaction
+{
+    _options.compaction_options_fifo.allow_compaction = allowCompaction;
+}
+
+- (BOOL)fifoCompactionSetAllow
+{
+    return _options.compaction_options_fifo.allow_compaction;
+}
+
 @end

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		200D8F58216810CB00A7FFF8 /* RocksDBWithTTL.h in Headers */ = {isa = PBXBuildFile; fileRef = 200D8F56216810CB00A7FFF8 /* RocksDBWithTTL.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		200D8F59216810CB00A7FFF8 /* RocksDBWithTTL.mm in Sources */ = {isa = PBXBuildFile; fileRef = 200D8F57216810CB00A7FFF8 /* RocksDBWithTTL.mm */; };
 		620A2CAE1A3654D5007224A4 /* RocksDBMergeOperatorTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 620A2CAD1A3654D5007224A4 /* RocksDBMergeOperatorTests.mm */; };
 		621897D51E3D3A580019C64E /* RocksDBBackupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E173E51A6AD40E00A00DF3 /* RocksDBBackupTests.swift */; };
 		621897D71E3D46720019C64E /* RocksDBColumnFamilyMetadataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F4AA7B1A6AAF9A00489D6C /* RocksDBColumnFamilyMetadataTests.swift */; };
@@ -1246,6 +1248,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		200D8F56216810CB00A7FFF8 /* RocksDBWithTTL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RocksDBWithTTL.h; sourceTree = "<group>"; };
+		200D8F57216810CB00A7FFF8 /* RocksDBWithTTL.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RocksDBWithTTL.mm; sourceTree = "<group>"; };
 		620494851A3284A800A0E950 /* RocksDBSnapshot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RocksDBSnapshot.h; sourceTree = "<group>"; };
 		620494861A3284A800A0E950 /* RocksDBSnapshot.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RocksDBSnapshot.mm; sourceTree = "<group>"; };
 		6206295E1A509DF1001DEDC4 /* RocksDBColumnFamilyOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RocksDBColumnFamilyOptions.h; sourceTree = "<group>"; };
@@ -2957,6 +2961,8 @@
 				625EF4961D0C3A960058ACDA /* RocksDBRange.mm */,
 				628B0CE81A1C104D0099C39B /* RocksDBError.h */,
 				628B0CE91A1C104D0099C39B /* RocksDBError.mm */,
+				200D8F56216810CB00A7FFF8 /* RocksDBWithTTL.h */,
+				200D8F57216810CB00A7FFF8 /* RocksDBWithTTL.mm */,
 				620629671A510D24001DEDC4 /* Column Family */,
 				620494831A32808800A0E950 /* Iterator */,
 				62685CBA1A2E8257009401B1 /* Write Batch */,
@@ -3073,6 +3079,7 @@
 				6297684320B7610300DEBF89 /* compacted_db_impl.h in Headers */,
 				6297691720B7618000DEBF89 /* rate_limiter.h in Headers */,
 				6297694D20B7618000DEBF89 /* table_properties_collectors.h in Headers */,
+				200D8F58216810CB00A7FFF8 /* RocksDBWithTTL.h in Headers */,
 				6297695120B7618000DEBF89 /* transaction_db.h in Headers */,
 				6297690D20B7618000DEBF89 /* ldb_tool.h in Headers */,
 				62976BAA20B7626300DEBF89 /* log_buffer.h in Headers */,
@@ -4046,6 +4053,7 @@
 				629767D120B7610300DEBF89 /* db_impl_files.cc in Sources */,
 				62976D2920B762AC00DEBF89 /* block_cache_tier_file.cc in Sources */,
 				62976DE320B762AC00DEBF89 /* pessimistic_transaction.cc in Sources */,
+				200D8F59216810CB00A7FFF8 /* RocksDBWithTTL.mm in Sources */,
 				6297675320B7610300DEBF89 /* compaction_picker_universal.cc in Sources */,
 				629767D520B7610300DEBF89 /* compaction_picker.cc in Sources */,
 				629767A920B7610300DEBF89 /* log_writer.cc in Sources */,

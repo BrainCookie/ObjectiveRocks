@@ -16,6 +16,7 @@ extern const unsigned char ObjectiveRocksVersionString[];
 
 // Rocks
 #import "RocksDB.h"
+#import "RocksDBWithTTL.h"
 #import "RocksDBRange.h"
 
 // Column Family
