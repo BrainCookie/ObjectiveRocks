@@ -75,7 +75,7 @@
 
 #pragma mark - Lifecycle
 
-+ (instancetype)databaseAtPath:(NSString *)path andDBOptions:(void (^)(RocksDBOptions *))optionsBlock
++ (instancetype)databaseAtPath:(NSString *)path andDBOptions:(void (^)(RocksDBOptions *))optionsBlock error:(NSError**)error
 {
 	RocksDB *rocks = [[RocksDB alloc] initWithPath:path];
 
@@ -83,7 +83,7 @@
 		optionsBlock(rocks.options);
 	}
 
-	if ([rocks openDatabaseReadOnly:NO] == NO) {
+	if ([rocks openDatabaseReadOnly:NO error:error] == NO) {
 		return nil;
 	}
 	return rocks;
@@ -91,7 +91,8 @@
 
 + (instancetype)databaseAtPath:(NSString *)path
 				columnFamilies:(RocksDBColumnFamilyDescriptor *)descriptor
-			andDatabaseOptions:(void (^)(RocksDBDatabaseOptions *options))optionsBlock
+            andDatabaseOptions:(void (^)(RocksDBDatabaseOptions *options))optionsBlock
+                         error:(NSError**)error
 {
 	RocksDB *rocks = [[RocksDB alloc] initWithPath:path];
 
@@ -101,7 +102,7 @@
 	}
 	rocks.options.databaseOptions = dbOptions;
 
-	if ([rocks openColumnFamilies:descriptor readOnly:NO] == NO) {
+	if ([rocks openColumnFamilies:descriptor readOnly:NO error:error] == NO) {
 		return nil;
 	}
 	return rocks;
@@ -186,7 +187,7 @@
 
 #pragma mark - Open
 
-- (BOOL)openDatabaseReadOnly:(BOOL)readOnly
+- (BOOL)openDatabaseReadOnly:(BOOL)readOnly error:(NSError**)error
 {
 	rocksdb::Status status;
 	if (readOnly) {
@@ -196,7 +197,9 @@
 	}
 
 	if (!status.ok()) {
-		NSLog(@"Error opening database: %@", [RocksDBError errorWithRocksStatus:status]);
+		NSError *statusError = [RocksDBError errorWithRocksStatus:status];
+		*error = statusError;
+		NSLog(@"Error opening database: %@", statusError);
 		[self close];
 		return NO;
 	}
@@ -205,7 +208,7 @@
 	return YES;
 }
 
-- (BOOL)openColumnFamilies:(RocksDBColumnFamilyDescriptor *)descriptor readOnly:(BOOL)readOnly
+- (BOOL)openColumnFamilies:(RocksDBColumnFamilyDescriptor *)descriptor readOnly:(BOOL)readOnly error:(NSError**)error
 {
 	rocksdb::Status status;
 	std::vector<rocksdb::ColumnFamilyDescriptor> *columnFamilies = descriptor.columnFamilies;
@@ -227,7 +230,9 @@
 
 
 	if (!status.ok()) {
-		NSLog(@"Error opening database: %@", [RocksDBError errorWithRocksStatus:status]);
+		NSError *statusError = [RocksDBError errorWithRocksStatus:status];
+		*error = statusError;
+		NSLog(@"Error opening database: %@", statusError);
 		[self close];
 		return NO;
 	}

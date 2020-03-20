@@ -56,7 +56,8 @@ NS_ASSUME_NONNULL_BEGIN
  that currently exist in the DB.
  */
 + (nullable instancetype)databaseAtPath:(NSString *)path
-						   andDBOptions:(nullable void (^)(RocksDBOptions *options))options;
+                           andDBOptions:(nullable void (^)(RocksDBOptions *options))options
+                                  error:(NSError**)error;
 
 /**
  Intializes a DB instance and opens the defined Column Families.
@@ -81,8 +82,9 @@ NS_ASSUME_NONNULL_BEGIN
  that currently exist in the DB.
  */
 + (nullable instancetype)databaseAtPath:(NSString *)path
-						 columnFamilies:(RocksDBColumnFamilyDescriptor *)descriptor
-					 andDatabaseOptions:(nullable void (^)(RocksDBDatabaseOptions *options))options;
+                         columnFamilies:(RocksDBColumnFamilyDescriptor *)descriptor
+                     andDatabaseOptions:(nullable void (^)(RocksDBDatabaseOptions *options))options
+                                  error:(NSError**)error;
 
 #if !(defined(ROCKSDB_LITE) && defined(TARGET_OS_IPHONE))
 
