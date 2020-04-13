@@ -349,7 +349,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Returns the object for the given key.
 
- @peram aKey The key for object.
+ @param aKey The key for object.
  @param error If an error occurs, upon return contains an `NSError` object that describes the problem.
  @return The object for the given key.
  */
@@ -358,7 +358,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Returns the object for the given key.
 
- @peram aKey The key for object.
+ @param aKey The key for object.
  @param error If an error occurs, upon return contains an `NSError` object that describes the problem.
  @param readOptions A block with a `RocksDBReadOptions` instance for configuring this read operation.
  @return The object for the given key.
@@ -368,6 +368,35 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable NSData *)dataForKey:(NSData *)aKey
 					readOptions:(nullable void (^)(RocksDBReadOptions *readOptions))readOptions
 						  error:(NSError * _Nullable *)error;
+
+/**
+ If the key definitely does not exist in the database, then this method
+ returns false, else true.
+
+ This check is potentially lighter-weight than invoking dataForKey. One way
+ to make this lighter weight is to avoid doing any IOs.
+
+ @param aKey The key for object to check.
+ @param value out parameter if a value is found in block-cache.
+ @return The object for the given key.
+ */
+- (BOOL)keyMayExist:(NSData *)aKey value:(NSString * _Nullable *_Nullable)value;
+
+/**
+ If the key definitely does not exist in the database, then this method
+ returns false, else true.
+
+ This check is potentially lighter-weight than invoking dataForKey. One way
+ to make this lighter weight is to avoid doing any IOs.
+
+ @param aKey The key for object to check.
+ @param readOptions `RocksDBReadOptions` instance for configuring this read operation.
+ @param value out parameter if a value is found in block-cache.
+ @return The object for the given key.
+ */
+- (BOOL)keyMayExist:(NSData *)aKey
+		readOptions:(nullable void (^)(RocksDBReadOptions *readOptions))readOptions
+			  value:(NSString * _Nullable *_Nullable)value;
 
 @end
 
@@ -382,7 +411,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Deletes the object for the given key.
 
- @peram aKey The key to delete.
+ @param aKey The key to delete.
  @param error If an error occurs, upon return contains an `NSError` object that describes the problem.
  @return `YES` if the operation succeeded, `NO` otherwise
  */
@@ -391,7 +420,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Deletes the object for the given key.
 
- @peram aKey The key to delete.
+ @param aKey The key to delete.
  @param error If an error occurs, upon return contains an `NSError` object that describes the problem.
  @param writeOptions A block with a `RocksDBWriteOptions` instance for configuring this delete operation.
  @return `YES` if the operation succeeded, `NO` otherwise
@@ -568,6 +597,79 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)compactRange:(RocksDBKeyRange *)range
 		 withOptions:(nullable void (^)(RocksDBCompactRangeOptions *options))options
 			   error:(NSError * _Nullable *)error;
+
+@end
+
+#pragma mark - File Deletions
+
+@interface RocksDB (FileDeletion)
+
+///--------------------------------
+/// @name File Deletions
+///--------------------------------
+
+/**
+ Prevent file deletions. Compactions will continue to occur,
+ but no obsolete files will be deleted. Calling this multiple
+ times have the same effect as calling it once.
+ @param error RocksDBError If an error occurs
+ */
+- (void)disableFileDeletions:(NSError * __autoreleasing *)error;
+
+/**
+ Allow compactions to delete obsolete files.
+ If force == true, the call to EnableFileDeletions()
+ will guarantee that file deletions are enabled after
+ the call, even if DisableFileDeletions() was called
+ multiple times before.
+
+ If force == false, EnableFileDeletions will only
+ enable file deletion after it's been called at least
+ as many times as DisableFileDeletions(), enabling
+ the two methods to be called by two threads
+ concurrently without synchronization
+ -- i.e., file deletions will be enabled only after both
+ threads call EnableFileDeletions()
+
+ @param force boolean value described above.
+ @param error RocksDBError If an error occurs
+ */
+- (void)enableFileDelections:(BOOL)force error:(NSError * __autoreleasing *)error;
+
+/**
+ Delete the file name from the db directory and update the internal state to
+ reflect that. Supports deletion of sst and log files only. 'name' must be
+ path relative to the db directory. eg. 000001.sst, /archive/000003.log
+
+ @param name the file name
+ @param error RocksDBError If an error occurs
+ */
+- (void)deleteFile:(NSString *)name error:(NSError * __autoreleasing *)error;
+
+@end
+
+#pragma mark - Background Work
+
+@interface RocksDB (BackgroundWork)
+
+///--------------------------------
+/// @name Background Work
+///--------------------------------
+
+/**
+ This function will wait until all currently running background processes
+ finish. After it returns, no background process will be run until
+ .continueBackgroundWork] is called
+
+ @param error RocksDBError If an error occurs when pausing background work
+ */
+- (void)pauseBackgroundWork:(NSError * __autoreleasing *)error;
+
+/**
+ Resumes background work which was suspended by previously calling .pauseBackground
+ @param error RocksDBError If an error occurs when resuming background work
+ */
+- (void)continueBackgroundWork:(NSError * __autoreleasing *)error;
 
 @end
 

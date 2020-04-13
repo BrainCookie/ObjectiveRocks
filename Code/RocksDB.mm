@@ -327,7 +327,7 @@
 
 #if !(defined(ROCKSDB_LITE) && defined(TARGET_OS_IPHONE))
 
-#pragma mark - Peroperties
+#pragma mark - Properties
 
 - (NSString *)valueForProperty:(RocksDBProperty)property
 {
@@ -453,6 +453,32 @@
 	}
 
 	return DataFromSlice(rocksdb::Slice(value));
+}
+
+- (BOOL)keyMayExist:(NSData *)aKey value:(NSString * _Nullable *)value
+{
+	return [self keyMayExist:aKey readOptions:nil value:value];
+}
+
+- (BOOL)keyMayExist:(NSData *)aKey
+		readOptions:(nullable void (^)(RocksDBReadOptions *readOptions))readOptionsBlock
+			  value:(NSString * _Nullable *)value
+{
+	RocksDBReadOptions *readOptions = [_readOptions copy];
+	if (readOptionsBlock) {
+		readOptionsBlock(readOptions);
+	}
+
+	bool found = NO;
+	std::string stringValue;
+	_db->KeyMayExist(readOptions.options,
+					 _columnFamily,
+					 SliceFromData(aKey),
+					 &stringValue,
+					 &found);
+
+	*value = [NSString stringWithUTF8String:stringValue.c_str()];
+	return found;
 }
 
 #pragma mark - Delete Operations
@@ -635,6 +661,65 @@
 		return NO;
 	}
 	return YES;
+}
+
+#pragma mark - File Deletions
+
+- (void)disableFileDeletions:(NSError * __autoreleasing *)error
+{
+    rocksdb::Status status = _db->DisableFileDeletions();
+    if (!status.ok()) {
+        NSError *temp = [RocksDBError errorWithRocksStatus:status];
+        if (error && *error == nil) {
+            *error = temp;
+        }
+    }
+}
+
+- (void)enableFileDelections:(BOOL)force error:(NSError * __autoreleasing *)error
+{
+    rocksdb::Status status = _db->EnableFileDeletions(force);
+    if (!status.ok()) {
+        NSError *temp = [RocksDBError errorWithRocksStatus:status];
+        if (error && *error == nil) {
+            *error = temp;
+        }
+    }
+}
+
+- (void)deleteFile:(NSString *)name error:(NSError * __autoreleasing *)error
+{
+    rocksdb::Status status = _db->DeleteFile(name.UTF8String);
+    if (!status.ok()) {
+        NSError *temp = [RocksDBError errorWithRocksStatus:status];
+        if (error && *error == nil) {
+            *error = temp;
+        }
+    }
+}
+
+#pragma mark - Background Work
+
+- (void)pauseBackgroundWork:(NSError * __autoreleasing *)error
+{
+    rocksdb::Status status = _db->PauseBackgroundWork();
+    if (!status.ok()) {
+        NSError *temp = [RocksDBError errorWithRocksStatus:status];
+        if (error && *error == nil) {
+            *error = temp;
+        }
+    }
+}
+
+- (void)continueBackgroundWork:(NSError * __autoreleasing *)error
+{
+    rocksdb::Status status = _db->ContinueBackgroundWork();
+    if (!status.ok()) {
+        NSError *temp = [RocksDBError errorWithRocksStatus:status];
+        if (error && *error == nil) {
+            *error = temp;
+        }
+    }
 }
 
 @end
